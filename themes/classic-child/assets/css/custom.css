@@ -1,0 +1,16 @@
+.thumbnail-container {
+    height: 375px !important;
+}
+
+.product-thumbnail {
+    margin-bottom: 15px !important;
+}
+
+.product-thumbnail img {
+    margin-top: 0 !important;
+}
+
+.product-description {
+    height: 130px !important;
+    margin: 0 !important;
+}
