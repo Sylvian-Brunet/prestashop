@@ -1,6 +1,7 @@
 <?php
 
 require _PS_MODULE_DIR_ . 'sylvian_blog/classes/BlogCategory.php';
+require _PS_MODULE_DIR_ . 'sylvian_blog/classes/BlogPost.php';
 
 if (!defined('_PS_VERSION_')) {
     exit;
@@ -27,12 +28,20 @@ class Sylvian_Blog extends Module {
     }
 
     public function install() {
-        $bdd = Db::getInstance()->execute(
-            'CREATE TABLE IF NOT EXISTS ' . _DB_PREFIX_ . 'blog_category (id_blog_category INT(11) NOT NULL AUTO_INCREMENT, title VARCHAR(255), description VARCHAR(255), PRIMARY KEY (id_blog_category))'
-        );
+        $bdd = Db::getInstance()->execute('CREATE TABLE IF NOT EXISTS ' . _DB_PREFIX_ . 'blog_category (id_blog_category INT(11) NOT NULL AUTO_INCREMENT, title VARCHAR(255), description VARCHAR(255), PRIMARY KEY (id_blog_category))');
+        $bdd = Db::getInstance()->execute('CREATE TABLE IF NOT EXISTS ' . _DB_PREFIX_ . 'blog_post (id_blog_post INT(11) NOT NULL AUTO_INCREMENT, id_blog_category INT(11), title VARCHAR(255), excerpt VARCHAR(100), content VARCHAR(255), PRIMARY KEY (id_blog_post))');
 
         $this->addTab('AdminBlogCategory', 'Blog category');
+        $this->addTab('AdminBlogPost', 'Blog post');
         return parent::install() && $bdd;
+    }
+
+    public function uninstall() {
+        $tabCategory = Tab::getInstanceFromClassName('AdminBlogCategory');
+        $tabCategory->delete();
+        $tabPost = Tab::getInstanceFromClassName('AdminBlogPost');
+        $tabPost->delete();
+        return parent::uninstall();
     }
 
     public function getContent() {
@@ -42,7 +51,9 @@ class Sylvian_Blog extends Module {
         $blogCategory->description = 'Description de ma catégorie';
         $blogCategory->save();
         */
-        return '<a href="' . Context::getContext()->link->getAdminLink('AdminBlogCategory') . '">Admin Blog Category</a>';
+
+        return '<a href="' . Context::getContext()->link->getAdminLink('AdminBlogCategory') . '">Admin Blog Category</a><br>' .
+               '<a href="' . Context::getContext()->link->getAdminLink('AdminBlogPost') . '">Admin Blog Post</a>';
     }
 
     public function addTab($controller, $tabName) {
